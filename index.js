@@ -1,14 +1,27 @@
-import express from "express"
+import express from "express";
+import mongoose from "mongoose";
+import { config as dotenvConfig } from "dotenv";
+import cors from "cors"
+import authRouter from "./router/auth.js";
+const app = express();
+dotenvConfig();
 
 
-const app =  express()
+mongoose
+  .connect(process.env.MONGO_URL + "")
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("Mongoose connection error:", err.message));
 
-app.get('/',(req,res)=>{
-    
-   res.send({message:"paru"}) 
-})
+app.use(express.json())
+app.use(cors({
+    origin:" http://localhost:5173",
+    methods: "GET, PUT, POST, PATCH, OPTIONS, DELETE",
+    allowedHeaders: ["Content-Type", "Authorization", "Cache-Control"],
+    credentials: true, 
+}))
 
+app.use('/auth',authRouter)
 
-app.listen(3000,()=>{
-    console.log('http://localhost:3000')
-})
+app.listen(3000, () => {
+  console.log("http://localhost:3000");
+});
