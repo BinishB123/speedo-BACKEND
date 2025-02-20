@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { config as dotenvConfig } from "dotenv";
 import cors from "cors"
 import authRouter from "./router/auth.js";
+import errorHandler from "./middleware/error.js";
+import cookieParser from "cookie-parser";
 const app = express();
 dotenvConfig();
 
@@ -13,6 +15,7 @@ mongoose
   .catch((err) => console.error("Mongoose connection error:", err.message));
 
 app.use(express.json())
+app.use(cookieParser())
 app.use(cors({
     origin:" http://localhost:5173",
     methods: "GET, PUT, POST, PATCH, OPTIONS, DELETE",
@@ -21,6 +24,8 @@ app.use(cors({
 }))
 
 app.use('/auth',authRouter)
+app.use(errorHandler)
+
 
 app.listen(3000, () => {
   console.log("http://localhost:3000");
