@@ -5,6 +5,12 @@ import cors from "cors"
 import authRouter from "./router/auth.js";
 import errorHandler from "./middleware/error.js";
 import cookieParser from "cookie-parser";
+import userRouter from "./router/userRoute.js";
+import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 dotenvConfig();
 
@@ -16,6 +22,7 @@ mongoose
 
 app.use(express.json())
 app.use(cookieParser())
+app.use("/public", express.static(path.resolve(__dirname, "public")));
 app.use(cors({
     origin:" http://localhost:5173",
     methods: "GET, PUT, POST, PATCH, OPTIONS, DELETE",
@@ -24,6 +31,7 @@ app.use(cors({
 }))
 
 app.use('/auth',authRouter)
+app.use('/',userRouter)
 app.use(errorHandler)
 
 
