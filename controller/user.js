@@ -24,10 +24,12 @@ const uploadTripData = async (req, res, next) => {
 const fetchTripController = async (req, res, next) => {
   try {
     const { id } = req.params;
-
+   
     const response = await fetchTripService(id);
     return res.status(STATUS_CODES.SUCCESS.OK).json(response);
   } catch (error) {
+    console.log(error);
+    
     next(error);
   }
 };
@@ -38,6 +40,8 @@ const fetchTripDataWithRequiredDetailController = async (req, res, next) => {
     const response = await fetchTripDataAndCalculateALlRequiredData(id);
     return res.status(STATUS_CODES.SUCCESS.OK).json(response);
   } catch (error) {
+    console.log(error);
+    
     next(error);
   }
 };

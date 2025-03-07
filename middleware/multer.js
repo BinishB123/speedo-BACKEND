@@ -10,7 +10,7 @@ const uploadPath = path.join(__dirname, "../public/files");
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    console.log("📂 Saving file to:", uploadPath);
+    // console.log(" aving file to:", uploadPath);
     callback(null, uploadPath);
   },
   filename: (req, file, callback) => {

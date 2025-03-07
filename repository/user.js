@@ -23,7 +23,7 @@ const createTrip = async (name, gpsData, userId) => {
  
     return recentData;
   } catch (error) {
-    if (error.keyPattern.tripName=== 1) {
+    if (error.keyPattern.tripName === 1) {
         throw new CustomError("User Another Trip Name ,This name is already Exist",STATUS_CODES.CLIENT_ERROR.CONFLICT);
  
     }
@@ -54,7 +54,10 @@ const fetchTrips = async(id)=>{
 
 const fetchTripsWithId = async(id) =>{
     try {
-        const response = await Trip.findOne({_id:new mongoose.Types.ObjectId(id)})    
+        console.log(id);
+        
+        const response = await Trip.findOne({_id:new mongoose.Types.ObjectId(id)}) 
+           
         return response
     } catch (error) {
         throw new CustomError(error.message.error.statusCode)

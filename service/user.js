@@ -11,6 +11,7 @@ import {
 import {
   calculateOverSpeedingDistance,
   calculateOverSpeedingDuration,
+  calculateOverSpeedingPoints,
   calculateStoppedDuration,
   calculateTotalDistance,
   calculateTravelDuration,
@@ -63,12 +64,14 @@ const fetchTripService = async (id) => {
 
 const fetchTripDataAndCalculateALlRequiredData = async (id) => {
   try {
-    const Trip = await fetchTripsWithId(id);
+    const Trip = await fetchTripsWithId(id); 
     const distance = calculateTotalDistance(Trip.gpsData);
     const travelDuration = calculateTravelDuration(Trip);
+    const {overspeedingPoints} = calculateOverSpeedingPoints(Trip)
     const overspeedingDuration = calculateOverSpeedingDuration(Trip);
     const overspeedingDistance = calculateOverSpeedingDistance(Trip);
     const stoppedDuration = calculateStoppedDuration(Trip);
+  
     return {
       tripData: Trip,
       distance: distance,
@@ -76,6 +79,7 @@ const fetchTripDataAndCalculateALlRequiredData = async (id) => {
       overSpeedDuration: overspeedingDuration,
       overSpeedingDistance: overspeedingDistance,
       stoppedDuration: stoppedDuration,
+      overSpeedingPoints:overspeedingPoints
     };
   } catch (error) {
     throw new CustomError(error.message, error.statusCode);

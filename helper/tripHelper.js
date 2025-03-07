@@ -59,7 +59,7 @@ const calculateOverSpeedingDuration = (gpsData, speedLimit = 60) => {
             { latitude: currentPoint.latitude, longitude: currentPoint.longitude },
             { latitude: nextPoint.latitude, longitude: nextPoint.longitude }
         );
-
+        
         // Calculate time difference (in seconds)
         const timeDiffSeconds = (new Date(nextPoint.timestamp) - new Date(currentPoint.timestamp)) / 1000;
 
@@ -86,7 +86,7 @@ const calculateOverSpeedingDuration = (gpsData, speedLimit = 60) => {
 
 
 const calculateOverSpeedingDistance = (gpsData, speedLimit = 60) => {
-    let totalOverspeedDistance = 0; // ✅ Initialize variable
+    let totalOverspeedDistance = 0; 
 
     for (let i = 0; i < gpsData.gpsData.length - 1; i++) {
         const currentPoint = gpsData.gpsData[i];
@@ -112,11 +112,10 @@ const calculateOverSpeedingDistance = (gpsData, speedLimit = 60) => {
 
         if (speed > speedLimit) {
             totalOverspeedDistance += distance;
-            console.log(`Over-Speeding Distance Added: ${distance}m`);
         }
     }
 
-    return totalOverspeedDistance; // ✅ Returns total overspeeding distance in meters
+    return totalOverspeedDistance; //  Returns total overspeeding distance in meters
 };
 
 const calculateStoppedDuration = (gpsData) => {
@@ -149,7 +148,63 @@ const calculateStoppedDuration = (gpsData) => {
 
 
 
-export  {calculateTotalDistance,calculateTravelDuration,calculateOverSpeedingDuration,calculateOverSpeedingDistance,calculateStoppedDuration}
+const calculateOverSpeedingPoints = (gpsData, speedLimit = 60) => {
+    let totalOverspeedDurationMs = 0;
+    let totalOverspeedDistance = 0;
+    let overspeedingPoints = [];
+
+    for (let i = 0; i < gpsData.gpsData.length - 1; i++) {
+        const currentPoint = gpsData.gpsData[i];
+        const nextPoint = gpsData.gpsData[i + 1];
+
+        
+        if (!currentPoint.latitude || !currentPoint.longitude || !currentPoint.timestamp ||
+            !nextPoint.latitude || !nextPoint.longitude || !nextPoint.timestamp) {
+            continue;
+        }
+
+        if (currentPoint.ignition === "off" || nextPoint.ignition === "off") {
+            continue;
+        }
+
+        if (currentPoint.latitude === nextPoint.latitude && currentPoint.longitude === nextPoint.longitude) {
+            continue;
+        }
+
+        const distance = geolib.getDistance(
+            { latitude: currentPoint.latitude, longitude: currentPoint.longitude },
+            { latitude: nextPoint.latitude, longitude: nextPoint.longitude }
+        );
+
+        const timeDiffSeconds = (new Date(nextPoint.timestamp) - new Date(currentPoint.timestamp)) / 1000;
+
+        if (timeDiffSeconds <= 0) continue; 
+
+        const speed = (distance / 1000) / (timeDiffSeconds / 3600);
+
+        if (speed > speedLimit) {
+            totalOverspeedDurationMs += timeDiffSeconds * 1000;
+            totalOverspeedDistance += distance;
+            
+            overspeedingPoints.push({
+                latitude: currentPoint.latitude,
+                longitude: currentPoint.longitude,
+                timestamp: currentPoint.timestamp,
+                speed: speed.toFixed(2) + " km/h"
+            });
+        }
+    }
+
+    return {
+        overspeedingPoints
+    };
+};
+;
+
+
+
+
+export  {calculateOverSpeedingPoints,calculateTotalDistance,calculateTravelDuration,calculateOverSpeedingDuration,calculateOverSpeedingDistance,calculateStoppedDuration}
 
 
 // const totalDistanceInMeters = calculateTotalDistance(gpsData);
