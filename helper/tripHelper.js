@@ -83,6 +83,10 @@ const calculateOverSpeedingDuration = (gpsData, speedLimit = 60) => {
 };
 
 
+const addspeed = (Trip)=>{
+
+}
+
 
 
 const calculateOverSpeedingDistance = (gpsData, speedLimit = 60) => {
@@ -185,7 +189,7 @@ const calculateOverSpeedingPoints = (gpsData, speedLimit = 60) => {
         if (speed > speedLimit) {
             totalOverspeedDurationMs += timeDiffSeconds * 1000;
             totalOverspeedDistance += distance;
-            
+
             overspeedingPoints.push({
                 latitude: currentPoint.latitude,
                 longitude: currentPoint.longitude,
@@ -202,12 +206,41 @@ const calculateOverSpeedingPoints = (gpsData, speedLimit = 60) => {
 ;
 
 
+const calculateSpeeds = (Trip) => {
+    console.log(Trip.gpsData);
+    
+    let result = [];
+
+    for (let i = 1; i < Trip.gpsData.length; i++) {
+        const prev = Trip.gpsData[i - 1];
+        const curr = Trip.gpsData[i];
+
+        const distance = geolib.getDistance(
+            { latitude: prev.latitude, longitude: prev.longitude },
+            { latitude: curr.latitude, longitude: curr.longitude }
+        ) / 1000; 
+
+       
+        const timeDiff = (new Date(curr.timestamp) - new Date(prev.timestamp)) / (1000 * 60 * 60); 
+
+       
+        const speed = timeDiff > 0 ? (distance / timeDiff) : 0;
+
+        
+        result.push({ latitude: curr.latitude, longitude: curr.longitude, speed: parseFloat(speed.toFixed(2)),timestamp:curr.timestamp ,ignition:curr.ignition});
+    }
+
+    
+
+    return result;
+};
 
 
-export  {calculateOverSpeedingPoints,calculateTotalDistance,calculateTravelDuration,calculateOverSpeedingDuration,calculateOverSpeedingDistance,calculateStoppedDuration}
+
+export  {calculateSpeeds,calculateOverSpeedingPoints,calculateTotalDistance,calculateTravelDuration,calculateOverSpeedingDuration,calculateOverSpeedingDistance,calculateStoppedDuration}
 
 
-// const totalDistanceInMeters = calculateTotalDistance(gpsData);
+// const totalDistanceInMeters = calculateTotalDistance(gpsTrip.gpsData);
 // console.log(`Total Distance Traveled: ${totalDistanceInMeters} meters`);
 
 // // Optionally, convert meters to kilometers:

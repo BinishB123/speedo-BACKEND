@@ -54,7 +54,6 @@ const fetchTrips = async(id)=>{
 
 const fetchTripsWithId = async(id) =>{
     try {
-        console.log(id);
         
         const response = await Trip.findOne({_id:new mongoose.Types.ObjectId(id)}) 
            

@@ -12,6 +12,7 @@ import {
   calculateOverSpeedingDistance,
   calculateOverSpeedingDuration,
   calculateOverSpeedingPoints,
+  calculateSpeeds,
   calculateStoppedDuration,
   calculateTotalDistance,
   calculateTravelDuration,
@@ -71,8 +72,13 @@ const fetchTripDataAndCalculateALlRequiredData = async (id) => {
     const overspeedingDuration = calculateOverSpeedingDuration(Trip);
     const overspeedingDistance = calculateOverSpeedingDistance(Trip);
     const stoppedDuration = calculateStoppedDuration(Trip);
+    const trip = calculateSpeeds(Trip)
+  
+    
+    
   
     return {
+      trip:trip,
       tripData: Trip,
       distance: distance,
       travelDuration: travelDuration,
