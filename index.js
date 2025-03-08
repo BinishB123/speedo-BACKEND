@@ -24,7 +24,7 @@ app.use(express.json())
 app.use(cookieParser())
 app.use("/public", express.static(path.resolve(__dirname, "public")));
 app.use(cors({
-    origin:" http://localhost:5173",
+    origin:"https://speedo-frontend.vercel.app",
     methods: "GET, PUT, POST, PATCH, OPTIONS, DELETE",
     allowedHeaders: ["Content-Type", "Authorization", "Cache-Control"],
     credentials: true, 

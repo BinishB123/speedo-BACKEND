@@ -8,9 +8,10 @@ const loginController = async (req, res, next) => {
     const token = generateToken(response.id);
     res.cookie("token", token, {
       httpOnly: true,
-      sameSite: true,
+      sameSite: 'none',
       path: "/",
-      maxAge:2*60*60*1000
+      maxAge:2*60*60*1000,
+      secure:true
     });
     res.json(response);
   } catch (error) {
